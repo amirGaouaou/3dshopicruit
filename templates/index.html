@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block scripts %}
+<script src="/static/scripts/jquery-2.2.4.js"></script>
+<script src="/static/scripts/renderjson.js"></script>
+<script src="/static/scripts/bundle.js"></script>
+
+{% endblock %}
+
+{% block body %}
+    <div class="content">
+        <div class="spacer"></div>
+        <div class="title">
+            <h1 class="title-text">Shopicruit Task 1</h1>
+        </div>
+
+        <div class="spacer"></div>
+        <div id="content-box" class="content-box">
+            <h2>Task</h2>
+            <p>
+                Getting shit done requires solid time management, so you’ve decided you need to stock up on clocks and watches. You head to your favourite Shopify store ‘Shopicruit’, which sells all kinds of wacky products. Write a program that calculates how much it will cost you to buy all the clocks and watches in the store.⏰ ⌚️ Attach your answer (in dollars), as well as your program (any language) below. You can find the endpoint for Shopicruit's products at: shopicruit.myshopify.com/products.json?page=1 (Keep in mind there are multiple pages of results). 🤖
+            </p>
+            <h2>Result</h2>
+            <p id="intro"> Hi Lauren, <br><br>
+                Click this button and you'll get the result!
+            </p>
+            <button id="calc-total" onclick="update()"><strong>Calculate total</strong></button>
+            <div id="result"></div>
+        </div>
+    </div>
+    <script>
+
+        var update = function(){
+            $.ajax({
+                'url': 'calculate',
+                'type': 'POST',
+                'success': updateWithResult,
+                'data': null,
+                'cache': false,
+                'contentType': false,
+                'processData': false
+            });
+        };
+
+        var updateWithResult = function(res){
+            console.log(res);
+            $('#intro').hide();
+            $('#calc-total').hide();
+            $('#result').append("<p>The total price for watches and clocks is <strong>"+res['total']+" $</strong></p>");
+            $('#result').append("<h4>Details</h4>");
+            var formatter = new JSONFormatter(res,2)
+            var details = $("<div id='details'></div>").append(formatter.render());
+            $('#result').append(details);
+
+        };
+    </script>
+{% endblock %}
